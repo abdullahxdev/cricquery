@@ -1,0 +1,39 @@
+{
+  "_README": "Curate 30 image-question-answer triples (6 per question type). Use clean images from data/splits/test/ for Q1+Q5. For Q2 (role) pull a few bowler photos. For Q3/Q4 use clean side-on shots where the answer is unambiguous. All paths are relative to the project root.",
+  "pairs": [
+    { "image": "data/splits/test/drive/REPLACE.jpg", "question": "What shot is being played?", "answer": "drive", "qtype": "shot" },
+    { "image": "data/splits/test/pullshot/REPLACE.jpg", "question": "What stroke is being played?", "answer": "pullshot", "qtype": "shot" },
+    { "image": "data/splits/test/sweep/REPLACE.jpg", "question": "Which shot is this?", "answer": "sweep", "qtype": "shot" },
+    { "image": "data/splits/test/legglance-flick/REPLACE.jpg", "question": "Identify the shot.", "answer": "legglance-flick", "qtype": "shot" },
+    { "image": "data/splits/test/defensive/REPLACE.jpg", "question": "What kind of shot is this?", "answer": "defensive", "qtype": "shot" },
+    { "image": "data/splits/test/drive/REPLACE.jpg", "question": "Name the shot played.", "answer": "drive", "qtype": "shot" },
+
+    { "image": "examples/batsman_1.jpg", "question": "Is this player a batsman or a bowler?", "answer": "batsman", "qtype": "role" },
+    { "image": "examples/batsman_2.jpg", "question": "Is the player batting or bowling?", "answer": "batsman", "qtype": "role" },
+    { "image": "examples/batsman_3.jpg", "question": "What is the role of the player?", "answer": "batsman", "qtype": "role" },
+    { "image": "examples/bowler_1.jpg", "question": "Is this player a batsman or a bowler?", "answer": "bowler", "qtype": "role" },
+    { "image": "examples/bowler_2.jpg", "question": "Is the player batting or bowling?", "answer": "bowler", "qtype": "role" },
+    { "image": "examples/bowler_3.jpg", "question": "Identify the player's role.", "answer": "bowler", "qtype": "role" },
+
+    { "image": "examples/righty_1.jpg", "question": "Is the batsman right-handed or left-handed?", "answer": "right-handed", "qtype": "handedness" },
+    { "image": "examples/righty_2.jpg", "question": "Right-handed or left-handed?", "answer": "right-handed", "qtype": "handedness" },
+    { "image": "examples/righty_3.jpg", "question": "What is the batsman's dominant hand?", "answer": "right-handed", "qtype": "handedness" },
+    { "image": "examples/lefty_1.jpg", "question": "Is the batsman right-handed or left-handed?", "answer": "left-handed", "qtype": "handedness" },
+    { "image": "examples/lefty_2.jpg", "question": "Left or right hander?", "answer": "left-handed", "qtype": "handedness" },
+    { "image": "examples/lefty_3.jpg", "question": "What is the handedness of the batsman?", "answer": "left-handed", "qtype": "handedness" },
+
+    { "image": "examples/front_foot_1.jpg", "question": "Is this a front-foot or back-foot shot?", "answer": "front foot", "qtype": "foot" },
+    { "image": "examples/front_foot_2.jpg", "question": "Front foot or back foot?", "answer": "front foot", "qtype": "foot" },
+    { "image": "examples/front_foot_3.jpg", "question": "Which foot is leading the shot?", "answer": "front foot", "qtype": "foot" },
+    { "image": "examples/back_foot_1.jpg", "question": "Is this a front-foot or back-foot shot?", "answer": "back foot", "qtype": "foot" },
+    { "image": "examples/back_foot_2.jpg", "question": "Front foot or back foot?", "answer": "back foot", "qtype": "foot" },
+    { "image": "examples/back_foot_3.jpg", "question": "Foot position of the batsman?", "answer": "back foot", "qtype": "foot" },
+
+    { "image": "data/splits/test/drive/REPLACE.jpg", "question": "Is this an attacking or defensive shot?", "answer": "attacking", "qtype": "intent" },
+    { "image": "data/splits/test/pullshot/REPLACE.jpg", "question": "Attacking or defensive?", "answer": "attacking", "qtype": "intent" },
+    { "image": "data/splits/test/sweep/REPLACE.jpg", "question": "What is the intent of the shot?", "answer": "attacking", "qtype": "intent" },
+    { "image": "data/splits/test/legglance-flick/REPLACE.jpg", "question": "Is this aggressive or defensive?", "answer": "attacking", "qtype": "intent" },
+    { "image": "data/splits/test/defensive/REPLACE.jpg", "question": "Is this an attacking or defensive shot?", "answer": "defensive", "qtype": "intent" },
+    { "image": "data/splits/test/defensive/REPLACE.jpg", "question": "Defensive shot?", "answer": "defensive", "qtype": "intent" }
+  ]
+}

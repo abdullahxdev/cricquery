@@ -1,0 +1,38 @@
+# Core deep learning
+torch>=2.1.0
+torchvision>=0.16.0
+
+# Hugging Face stack (ViT, CLIP, BLIP-2, Whisper)
+transformers>=4.40.0
+accelerate>=0.27.0
+sentencepiece>=0.1.99
+safetensors>=0.4.0
+
+# YOLOv8
+ultralytics>=8.1.0
+
+# Classical CV
+opencv-python>=4.9.0
+Pillow>=10.0.0
+
+# Pose fallback for handedness
+mediapipe>=0.10.9
+
+# Augmentations
+albumentations>=1.4.0
+
+# Data loading and Kaggle
+kaggle>=1.6.0
+pandas>=2.1.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+
+# Web demo
+gradio>=4.20.0
+
+# Plotting for report figures
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# Optional: BLIP-2 utilities
+bitsandbytes>=0.42.0  # for 8-bit quantization to fit BLIP-2 on Colab T4
