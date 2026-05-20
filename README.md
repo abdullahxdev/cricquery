@@ -206,5 +206,5 @@ This modular pipeline improves both accuracy and interpretability.
 
 # Contributors
 
-- [SaadThiwana](http://github.com/saadhtiwana)
-- [AbdullahXDev](http://github.com/abdullahxdev)
+- [Malik Saad Hayat](http://github.com/saadhtiwana)
+- [Muhammad Abdullah](http://github.com/abdullahxdev)
