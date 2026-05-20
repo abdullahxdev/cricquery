@@ -41,13 +41,10 @@ def render_answer_panel(image: np.ndarray, answer: str, qtype: str, confidence: 
     """Add a translucent black banner with the answer text at the bottom."""
     h, w = image.shape[:2]
     overlay = image.copy()
-    band_h = max(72, int(h * 0.14))
+    band_h = max(56, int(h * 0.10))
     cv2.rectangle(overlay, (0, h - band_h), (w, h), (0, 0, 0), -1)
     out = cv2.addWeighted(overlay, 0.55, image, 0.45, 0)
-    line1 = f"[{qtype.upper()}]  {answer}"
-    line2 = f"confidence: {confidence:.1%}"
-    cv2.putText(out, line1, (12, h - band_h + 28),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
-    cv2.putText(out, line2, (12, h - band_h + 56),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.55, (200, 255, 200), 1, cv2.LINE_AA)
+    line = f"[{qtype.upper()}]  {answer}"
+    cv2.putText(out, line, (12, h - band_h + 36),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
     return out

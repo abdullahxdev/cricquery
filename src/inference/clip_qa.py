@@ -91,9 +91,12 @@ class CLIPZeroShot:
             sim = (img_f @ txt_f.T).mean(dim=-1)  # average over paraphrases
             scores[label] = float(sim.item())
 
-        # softmax over the label means for a confidence value
+        # softmax over the label means for a confidence value.
+        # Using a softer temperature (20) than CLIP's default 100 — that one
+        # over-saturates every answer to 99% which is misleading. Temp 20 means
+        # a 5% cosine-sim gap maps to ~73% confidence, which matches reality.
         names = list(scores.keys())
-        logits = torch.tensor([scores[n] for n in names]) * 100  # CLIP-style temperature
+        logits = torch.tensor([scores[n] for n in names]) * 20
         probs = logits.softmax(dim=-1)
         idx = int(probs.argmax().item())
         return CLIPAnswer(

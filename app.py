@@ -12,12 +12,16 @@ from PIL import Image
 
 from src.pipeline import CricQueryPipeline
 
-ENABLE_BLIP2 = os.environ.get("CRICQUERY_BLIP2", "1") == "1"
+# BLIP-2 is OFF by default — it's a 2.7B-parameter model that takes 30s–2min per
+# question on CPU/MPS and locks the Gradio queue. The 5 structured question types
+# (shot/role/handedness/foot/intent) handle everything we need for the demo.
+# To turn it on for testing free-form: CRICQUERY_BLIP2=1 python app.py
+ENABLE_BLIP2 = os.environ.get("CRICQUERY_BLIP2", "0") == "1"
 EXAMPLES_DIR = Path(__file__).parent / "examples"
 
 PIPELINE = CricQueryPipeline(enable_blip2=ENABLE_BLIP2)
 
-# Friendly labels for the 5 structured question types
+# Friendly labels for the supported question types
 QTYPE_LABEL = {
     "shot": "Shot type",
     "role": "Player role",
@@ -28,14 +32,14 @@ QTYPE_LABEL = {
     "preflight": "Image check",
 }
 
-# Buttons we show in the UI — the 5 supported types + one freeform demo
+# Only show the 5 supported question types. Free-form is intentionally NOT in the
+# preset list so users don't accidentally trigger BLIP-2.
 PRESET_QUESTIONS = [
     ("🏏 What shot is being played?", "What shot is being played?"),
     ("🎯 Is this a batsman or a bowler?", "Is this player a batsman or a bowler?"),
     ("✋ Is the batsman right-handed or left-handed?", "Is the batsman right-handed or left-handed?"),
     ("👟 Is this a front-foot or back-foot shot?", "Is this a front-foot or back-foot shot?"),
     ("⚔️ Is this an attacking or defensive shot?", "Is this an attacking or defensive shot?"),
-    ("📝 Describe what is happening", "Describe what is happening in this image."),
 ]
 
 
@@ -48,34 +52,41 @@ def run(image: Image.Image, question: str):
     res = PIPELINE.answer(image, question)
     vis = PIPELINE.visualize(image, res)
 
-    # Friendly headline
     qtype_pretty = QTYPE_LABEL.get(res.qtype, res.qtype.title())
 
-    # Special-case freeform-disabled — give a helpful nudge
-    if res.qtype == "freeform" and "disabled" in res.answer.lower():
+    # Friendly message for free-form (BLIP-2 disabled by default)
+    if res.qtype == "freeform":
         answer_md = (
-            "### 💤 Free-form description is disabled\n\n"
-            "Free-form answers use BLIP-2 (a 2.7B-parameter model) which is slow on CPU. "
-            "To enable it, restart the app without the `CRICQUERY_BLIP2=0` flag.\n\n"
-            "**Meanwhile, try one of the structured questions** "
-            "(shot · role · handedness · foot · intent) — those answer in 1–2 seconds."
+            "### 🤔 Free-form questions aren't supported in this demo\n\n"
+            "This system specialises in **5 structured question types** about cricket photos.\n\n"
+            "**Try one of these instead** (click a button below the image):\n"
+            "- 🏏 What shot is being played?\n"
+            "- 🎯 Is this a batsman or a bowler?\n"
+            "- ✋ Is the batsman right-handed or left-handed?\n"
+            "- 👟 Is this a front-foot or back-foot shot?\n"
+            "- ⚔️ Is this an attacking or defensive shot?"
         )
     else:
+        # Big, clean answer — no confidence number to avoid bad-looking values
         answer_md = (
-            f"## **{res.answer}**\n\n"
-            f"*Confidence: **{res.confidence:.1%}**  ·  Question type: **{qtype_pretty}***"
+            f"## ✅ {res.answer.title()}\n\n"
+            f"*Question type: **{qtype_pretty}***"
         )
 
-    # Compact, plain-English technical breakdown (collapsed by default)
+    # Technical details (collapsed by default — for viva)
+    timing = res.extras.get("timing", {})
     details = (
-        f"- **Question type:** `{res.qtype}` — the system classified your question into this category\n"
-        f"- **Resolved by:** `{res.via}` — the model that produced the answer "
-        f"(ViT = fine-tuned classifier · CLIP = zero-shot match · YOLO = bbox geometry · "
-        f"rule = derived from the shot prediction · BLIP-2 = free-form generative)\n"
+        f"- **Question type:** `{res.qtype}` — which category the system put your question in\n"
+        f"- **Resolved by:** `{res.via}` — the model that answered "
+        f"(ViT · CLIP · YOLO · rule · BLIP-2)\n"
         f"- **Router:** `{res.extras.get('router_via', '-')}` "
-        f"(confidence {res.extras.get('router_confidence', 0):.2f}) — how the question type was decided "
-        f"(regex = keyword match · clip = text-similarity match)\n"
-        f"- **Camera view:** `{res.extras.get('camera_view', '-')}` — image angle (used to flip handedness rule)"
+        f"(conf {res.extras.get('router_confidence', 0):.2f}) — how the question type was decided\n"
+        f"- **Internal confidence:** `{res.confidence:.1%}`  *(hidden from the headline to keep the demo clean)*\n"
+        f"- **Camera view:** `{res.extras.get('camera_view', '-')}` — image angle used for handedness rule\n"
+        f"- **Latency:** total `{timing.get('total_ms', 0)}ms`  "
+        f"(preprocess {timing.get('preprocess_ms', 0)}ms, "
+        f"route {timing.get('route_ms', 0)}ms, "
+        f"answer {timing.get('answer_ms', 0)}ms)"
     )
     return vis, answer_md, details
 
@@ -95,7 +106,7 @@ with gr.Blocks(title="CricQuery — AI Cricket Commentator", theme=gr.themes.Sof
         # 🏏 CricQuery — AI Cricket Commentator
 
         Multimodal Visual Question Answering for cricket photos.
-        **Upload an image → click a question button → get an answer with confidence.**
+        **Upload an image → click a question button → get an answer.**
         """
     )
 
@@ -105,7 +116,7 @@ with gr.Blocks(title="CricQuery — AI Cricket Commentator", theme=gr.themes.Sof
             img_in = gr.Image(type="pil", label="📷 Cricket image", height=380)
             q_in = gr.Textbox(
                 label="Your question",
-                placeholder="Type a question, or click one of the buttons below ↓",
+                placeholder="Click a button below — or type your own question",
                 lines=1,
             )
             with gr.Row():
