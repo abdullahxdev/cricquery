@@ -1,4 +1,4 @@
-# CricQuery — AI Cricket Commentator
+# CricQuery, AI Cricket Commentator
 
 A multimodal Visual Question Answering system for cricket images. Upload a cricket photo, ask a natural-language question, and receive a structured answer with a confidence score.
 
